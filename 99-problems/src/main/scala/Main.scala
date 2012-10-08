@@ -27,6 +27,10 @@ object Main extends App {
     println("Problem 16.2: " + drop2(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k)));
     println("Problem 17.1: " + split1(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k)));
     println("Problem 17.2: " + split2(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k)));
+    println("Problem 18.1: " + slice1(3, 7, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k)));
+    println("Problem 18.2: " + slice2(3, 7, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k)));
+    println("Problem 19.1: " + rotate(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k)));
+    println("Problem 19.2: " + rotate(-2, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k)));
   }
 
   def last1[A](in: List[A]): A = in.last
@@ -126,5 +130,25 @@ object Main extends App {
       case (first, second :: tail) => if (c < n) splitR(n, c + 1, (first ::: List(second), tail)) else (first, second :: tail)
     }
     splitR(n, 0, (Nil, in))
+  }
+  def slice1[A](start: Int, finish: Int, in: List[A]): List[A] = in.slice(start, finish)
+  def slice2[A](start: Int, finish: Int, in: List[A]): List[A] = {
+    in.slice(start, finish)
+    def sliceR[A](n: Int, start: Int, finish: Int, in: List[A]): List[A] = in match {
+      case Nil => Nil
+      case item :: tail if (n < start) => sliceR(n + 1, start, finish, tail)
+      case item :: tail if (n >= start && n < finish) => item :: sliceR(n + 1, start, finish, tail)
+      case item :: tail => Nil
+    }
+    sliceR(0, start, finish, in);
+  }
+  def rotate[A](n: Int, in: List[A]): List[A] = {
+    def rotateR[A](i: Int, in: List[A]): List[A] = (i, in) match {
+      case (_, Nil) => Nil
+      case (position, item :: tail) if (position > 0) => rotateR(position - 1, List(item) ::: tail)
+      case (position, item :: tail) if (position < 0) => rotateR(position + 1, List(item) ::: tail)
+      case (position, list) => list
+    }
+    rotateR(n, in)
   }
 }
