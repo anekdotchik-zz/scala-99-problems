@@ -1,3 +1,5 @@
+import scala.collection.immutable.Nil
+
 object Main extends App {
 
   override def main(arg: Array[String]) = {
@@ -31,6 +33,8 @@ object Main extends App {
     println("Problem 18.2: " + slice2(3, 7, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k)));
     println("Problem 19.1: " + rotate(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k)));
     println("Problem 19.2: " + rotate(-2, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k)));
+    println("Problem 20.1: " + removeAt1(1, List('a, 'b, 'c, 'd)));
+    println("Problem 20.2: " + removeAt2(1, List('a, 'b, 'c, 'd)));
   }
 
   def last1[A](in: List[A]): A = in.last
@@ -145,10 +149,26 @@ object Main extends App {
   def rotate[A](n: Int, in: List[A]): List[A] = {
     def rotateR[A](i: Int, in: List[A]): List[A] = (i, in) match {
       case (_, Nil) => Nil
-      case (position, item :: tail) if (position > 0) => rotateR(position - 1, List(item) ::: tail)
-      case (position, item :: tail) if (position < 0) => rotateR(position + 1, List(item) ::: tail)
+      case (position, item :: tail) if (position > 0) => rotateR(position - 1, tail ::: List(item))
+      case (position, item :: tail) if (position < 0) => rotateR(in.length + position - 1, tail ::: List(item))
       case (position, list) => list
     }
-    rotateR(n, in)
+    rotateR(n % in.length, in)
+  }
+  def removeAt1[A](n: Int, in: List[A]): (List[A], A) = in.splitAt(n) match {
+    case (_, Nil) => throw new NoSuchElementException
+    case (Nil, _) => throw new NoSuchElementException
+    case (list, item :: tail) => (list ::: tail, item)
+  }
+  def removeAt2[A](n: Int, in: List[A]): (List[A], A) = {
+    def removeAtR[A](i: Int, in: List[A]): (List[A], A) = (i, in) match {
+      case (_, Nil) => throw new NoSuchElementException
+      case (0, item :: tail) => (tail, item)
+      case (position, item :: tail) => {
+        var (l, e) = removeAtR(position - 1, tail)
+        (item :: l, e)
+      }
+    }
+    removeAtR(n, in)
   }
 }
