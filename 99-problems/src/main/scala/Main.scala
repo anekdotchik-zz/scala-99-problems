@@ -35,36 +35,41 @@ object Main extends App {
     println("Problem 19.2: " + rotate(-2, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k)));
     println("Problem 20.1: " + removeAt1(1, List('a, 'b, 'c, 'd)));
     println("Problem 20.2: " + removeAt2(1, List('a, 'b, 'c, 'd)));
+    println("Problem 21.1: " + insertAt1('new, 1, List('a, 'b, 'c, 'd)));
+    println("Problem 21.2: " + insertAt2('new, 1, List('a, 'b, 'c, 'd)));
+    println("Problem 22.1: " + range1(4, 9));
+    println("Problem 22.2: " + range2(4, 9));
+    println("Problem 22.3: " + range3(4, 9));
   }
 
   def last1[A](in: List[A]): A = in.last
   def last2[A](in: List[A]): A = in match {
     case item :: Nil => item
-    case _ :: tail => last2(tail)
-    case _ => throw new NoSuchElementException
+    case _ :: tail   => last2(tail)
+    case _           => throw new NoSuchElementException
   }
   def penultimate[A](in: List[A]): A = in match {
     case item :: _ :: Nil => item
-    case _ :: tail => penultimate(tail)
-    case _ => throw new NoSuchElementException
+    case _ :: tail        => penultimate(tail)
+    case _                => throw new NoSuchElementException
   }
   def nth[A](k: Int, in: List[A]): A = {
     def nthR[A](pos: Int, in: List[A]): A = (pos, in) match {
       case (0, item :: _) => item
       case (n, _ :: tail) => nthR(n - 1, tail)
-      case (_, Nil) => throw new NoSuchElementException
+      case (_, Nil)       => throw new NoSuchElementException
     }
     nthR(k, in)
   }
   def length1[A](in: List[A]): Int = in.length
   def length2[A](in: List[A]): Int = in match {
-    case Nil => 0
+    case Nil       => 0
     case _ :: tail => length2(tail) + 1
   }
   def length3[A](in: List[A]): Int = in.foldLeft(0)((l, _) => l + 1)
   def reverse1[A](in: List[A]): List[A] = in.reverse
   def reverse2[A](in: List[A]): List[A] = in match {
-    case Nil => Nil
+    case Nil          => Nil
     case item :: tail => reverse2(tail) ::: List(item)
   }
   def reverse3[A](in: List[A]): List[A] = in.foldLeft(List[A]()) { (a, b) => b :: a }
@@ -85,7 +90,7 @@ object Main extends App {
   }
   def flatten(in: List[Any]): List[Any] = in flatMap {
     case item: List[_] => flatten(item)
-    case item => List(item)
+    case item          => List(item)
   }
   def compress[A](in: List[A]): List[A] = {
     def compressR[A](in: List[A], prev: A): List[A] = in match {
@@ -122,7 +127,7 @@ object Main extends App {
   def drop1[A](n: Int, in: List[A]): List[A] = in.zipWithIndex filter { v => (v._2 + 1) % n != 0 } map { _._1 }
   def drop2[A](n: Int, in: List[A]): List[A] = {
     def dropR[A](n: Int, c: Int, in: List[A]): List[A] = in match {
-      case Nil => Nil
+      case Nil          => Nil
       case item :: tail => if (c % n == 0) dropR(n, c + 1, tail) else List(item) ::: dropR(n, c + 1, tail)
     }
     dropR(n, 1, in)
@@ -130,7 +135,7 @@ object Main extends App {
   def split1[A](n: Int, in: List[A]): (List[A], List[A]) = in.splitAt(n)
   def split2[A](n: Int, in: List[A]): (List[A], List[A]) = {
     def splitR[A](n: Int, c: Int, in: (List[A], List[A])): (List[A], List[A]) = in match {
-      case (item, Nil) => (item, Nil)
+      case (item, Nil)             => (item, Nil)
       case (first, second :: tail) => if (c < n) splitR(n, c + 1, (first ::: List(second), tail)) else (first, second :: tail)
     }
     splitR(n, 0, (Nil, in))
@@ -139,30 +144,30 @@ object Main extends App {
   def slice2[A](start: Int, finish: Int, in: List[A]): List[A] = {
     in.slice(start, finish)
     def sliceR[A](n: Int, start: Int, finish: Int, in: List[A]): List[A] = in match {
-      case Nil => Nil
-      case item :: tail if (n < start) => sliceR(n + 1, start, finish, tail)
+      case Nil                                        => Nil
+      case item :: tail if (n < start)                => sliceR(n + 1, start, finish, tail)
       case item :: tail if (n >= start && n < finish) => item :: sliceR(n + 1, start, finish, tail)
-      case item :: tail => Nil
+      case item :: tail                               => Nil
     }
     sliceR(0, start, finish, in);
   }
   def rotate[A](n: Int, in: List[A]): List[A] = {
     def rotateR[A](i: Int, in: List[A]): List[A] = (i, in) match {
-      case (_, Nil) => Nil
+      case (_, Nil)                                   => Nil
       case (position, item :: tail) if (position > 0) => rotateR(position - 1, tail ::: List(item))
       case (position, item :: tail) if (position < 0) => rotateR(in.length + position - 1, tail ::: List(item))
-      case (position, list) => list
+      case (position, list)                           => list
     }
     rotateR(n % in.length, in)
   }
   def removeAt1[A](n: Int, in: List[A]): (List[A], A) = in.splitAt(n) match {
-    case (_, Nil) => throw new NoSuchElementException
-    case (Nil, _) => throw new NoSuchElementException
+    case (_, Nil)             => throw new NoSuchElementException
+    case (Nil, _)             => throw new NoSuchElementException
     case (list, item :: tail) => (list ::: tail, item)
   }
   def removeAt2[A](n: Int, in: List[A]): (List[A], A) = {
     def removeAtR[A](i: Int, in: List[A]): (List[A], A) = (i, in) match {
-      case (_, Nil) => throw new NoSuchElementException
+      case (_, Nil)          => throw new NoSuchElementException
       case (0, item :: tail) => (tail, item)
       case (position, item :: tail) => {
         var (l, e) = removeAtR(position - 1, tail)
@@ -170,5 +175,25 @@ object Main extends App {
       }
     }
     removeAtR(n, in)
+  }
+  def insertAt1[A](el: A, n: Int, in: List[A]): List[A] = in.splitAt(n) match {
+    case (head, tail) => head ::: el :: tail
+  }
+  def insertAt2[A](el: A, n: Int, in: List[A]): List[A] = {
+    if (n == 0) el :: in
+    else in.head :: insertAt2(el, n - 1, in.tail)
+  }
+  def range1(start: Int, finish: Int): List[Int] = Range(start, finish + 1).toList
+  def range2(start: Int, finish: Int): List[Int] = {
+    var res = List[Int]()
+    for (i <- start until finish + 1) {
+      res = i :: res
+    }
+    res.reverse
+  }
+  def range3(start: Int, finish: Int): List[Int] = {
+    if (start > finish) throw new IllegalArgumentException
+    else if (start == finish) List(start)
+    else start :: range3(start + 1, finish)
   }
 }
