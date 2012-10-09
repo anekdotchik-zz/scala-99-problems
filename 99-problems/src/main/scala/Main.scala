@@ -44,6 +44,7 @@ object Main extends App {
     println("Problem 23: " + randomSelect(3, List('a, 'b, 'c, 'd, 'f, 'g, 'h)));
     println("Problem 24.1: " + lotto1(6, 49));
     println("Problem 24.2: " + lotto2(6, 49));
+    println("Problem 25: " + randomPermute(List('a, 'b, 'c, 'd, 'e, 'f)));
   }
 
   def last1[A](in: List[A]): A = in.last
@@ -200,9 +201,11 @@ object Main extends App {
     else start :: range3(start + 1, finish)
   }
   def randomSelect[A](n: Int, in: List[A]): List[A] = {
-    if (n < in.length) randomSelect(n, removeAt1(util.Random.nextInt(in.length), in)._1)
-    else if (n == in.length) in
-    else throw new NoSuchElementException
+    if (n == 0) Nil
+    else if (n > 0) {
+      var (list, el) = removeAt1(util.Random.nextInt(in.length), in)
+      el :: randomSelect(n - 1, list)
+    } else throw new NoSuchElementException
   }
   def lotto1(n: Int, limit: Int): List[Int] = {
     def lottoR(n: Int, limit: Int, list: List[Int]): List[Int] = {
@@ -219,4 +222,11 @@ object Main extends App {
   def lotto2(n: Int, limit: Int): List[Int] = {
     randomSelect(n, List.range(1, limit + 1))
   }
+  def randomPermute[A](in: List[A]): List[A] =
+    if (in == Nil) Nil
+    else {
+      var item: A = randomSelect(1, in).head
+      item :: randomPermute(in.filterNot({ _ == item }))
+    }
+
 }
