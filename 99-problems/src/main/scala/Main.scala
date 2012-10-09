@@ -42,6 +42,8 @@ object Main extends App {
     println("Problem 22.2: " + range2(4, 9));
     println("Problem 22.3: " + range3(4, 9));
     println("Problem 23: " + randomSelect(3, List('a, 'b, 'c, 'd, 'f, 'g, 'h)));
+    println("Problem 24.1: " + lotto1(6, 49));
+    println("Problem 24.2: " + lotto2(6, 49));
   }
 
   def last1[A](in: List[A]): A = in.last
@@ -201,5 +203,20 @@ object Main extends App {
     if (n < in.length) randomSelect(n, removeAt1(util.Random.nextInt(in.length), in)._1)
     else if (n == in.length) in
     else throw new NoSuchElementException
+  }
+  def lotto1(n: Int, limit: Int): List[Int] = {
+    def lottoR(n: Int, limit: Int, list: List[Int]): List[Int] = {
+      if (n < 0) throw new IllegalArgumentException
+      else if (n == 0) list
+      else {
+        var r = util.Random.nextInt(limit) + 1
+        if (list.contains(r)) lottoR(n, limit, list)
+        else r :: lottoR(n - 1, limit, list)
+      }
+    }
+    lottoR(n, limit, List[Int]())
+  }
+  def lotto2(n: Int, limit: Int): List[Int] = {
+    randomSelect(n, List.range(1, limit + 1))
   }
 }
