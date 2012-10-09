@@ -145,10 +145,10 @@ object Main extends App {
   def rotate[A](n: Int, in: List[A]): List[A] = {
     def rotateR[A](i: Int, in: List[A]): List[A] = (i, in) match {
       case (_, Nil) => Nil
-      case (position, item :: tail) if (position > 0) => rotateR(position - 1, List(item) ::: tail)
-      case (position, item :: tail) if (position < 0) => rotateR(position + 1, List(item) ::: tail)
+      case (position, item :: tail) if (position > 0) => rotateR(position - 1, tail ::: List(item))
+      case (position, item :: tail) if (position < 0) => rotateR(in.length + position - 1, tail ::: List(item))
       case (position, list) => list
     }
-    rotateR(n, in)
+    rotateR(n % in.length, in)
   }
 }
