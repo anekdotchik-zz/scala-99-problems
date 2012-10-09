@@ -1,4 +1,5 @@
 import scala.collection.immutable.Nil
+import scala.util.Random
 
 object Main extends App {
 
@@ -40,6 +41,7 @@ object Main extends App {
     println("Problem 22.1: " + range1(4, 9));
     println("Problem 22.2: " + range2(4, 9));
     println("Problem 22.3: " + range3(4, 9));
+    println("Problem 23: " + randomSelect(3, List('a, 'b, 'c, 'd, 'f, 'g, 'h)));
   }
 
   def last1[A](in: List[A]): A = in.last
@@ -162,7 +164,6 @@ object Main extends App {
   }
   def removeAt1[A](n: Int, in: List[A]): (List[A], A) = in.splitAt(n) match {
     case (_, Nil)             => throw new NoSuchElementException
-    case (Nil, _)             => throw new NoSuchElementException
     case (list, item :: tail) => (list ::: tail, item)
   }
   def removeAt2[A](n: Int, in: List[A]): (List[A], A) = {
@@ -195,5 +196,10 @@ object Main extends App {
     if (start > finish) throw new IllegalArgumentException
     else if (start == finish) List(start)
     else start :: range3(start + 1, finish)
+  }
+  def randomSelect[A](n: Int, in: List[A]): List[A] = {
+    if (n < in.length) randomSelect(n, removeAt1(util.Random.nextInt(in.length), in)._1)
+    else if (n == in.length) in
+    else throw new NoSuchElementException
   }
 }
