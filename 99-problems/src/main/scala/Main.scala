@@ -45,6 +45,7 @@ object Main extends App {
     println("Problem 24.1: " + lotto1(6, 49));
     println("Problem 24.2: " + lotto2(6, 49));
     println("Problem 25: " + randomPermute(List('a, 'b, 'c, 'd, 'e, 'f)));
+    println("Problem 26: " + combinations(3, List('a, 'b, 'c, 'd, 'e, 'f)));
   }
 
   def last1[A](in: List[A]): A = in.last
@@ -228,5 +229,14 @@ object Main extends App {
       var item: A = randomSelect(1, in).head
       item :: randomPermute(in.filterNot({ _ == item }))
     }
-
+  def combinations[A](i: Int, in: List[A]): List[List[A]] = {
+    def traverce[A, B](in: List[A])(f: List[A] => List[B]): List[B] = in match {
+      case Nil                => Nil
+      case list @ (_ :: tail) => f(list) ::: traverce(tail)(f)
+    }
+    if (i == 0) List(Nil)
+    else traverce(in) {
+      el => combinations(i - 1, el.tail) map { el.head :: _ }
+    }
+  }
 }
